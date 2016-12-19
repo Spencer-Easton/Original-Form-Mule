@@ -177,7 +177,7 @@ function formMule_setCalendarSettings () {
   }
   var lastCol = sourceSheet.getLastColumn();
   if (lastCol > 0) {
-  var headers = sourceSheet.getRange(1, 1, 1, lastCol).getValues()[0];
+  var headers = sourceSheet.getRange(1, 1, 1, lastCol).getDisplayValues()[0];
   } else {
     Browser.msgBox('You must have headers in your source data sheet before this menu item can be selected.');
     formMule_defineSettings();
@@ -573,7 +573,7 @@ function formMule_getAvailableTags() {
   }
   var lastCol = sheet.getLastColumn();
   var headerRange = sheet.getRange(1, 1, 1, lastCol);
-  var headers = headerRange.getValues();
+  var headers = headerRange.getDisplayValues();
   var availableTags = [];
   
   for (var i=0; i<headers[0].length; i++) {
@@ -614,7 +614,7 @@ function formMule_fetchHeaders(sheet) {
     sheet.getRange(1, 1, 1, 3).setValues([['Dummy Header 1','Dummy Header 2','Dummy Header 3']]);
     SpreadsheetApp.flush();
   }
-  var headers = sheet.getRange(1, 1, 1, sheet.getLastColumn()).getValues()[0];
+  var headers = sheet.getRange(1, 1, 1, sheet.getLastColumn()).getDisplayValues()[0];
   return headers;  
 }
 
@@ -903,7 +903,7 @@ function formMule_setEmailConditionGrid(app) {
     var sourceSheet = ss.getSheetByName(sourceSheetName);
   }
   var lastCol = sourceSheet.getLastColumn();
-  var headers = sourceSheet.getRange(1, 1, 1, lastCol).getValues()[0];
+  var headers = sourceSheet.getRange(1, 1, 1, lastCol).getDisplayValues()[0];
   var numSelected = ScriptProperties.getProperty('numSelected');
   if ((!numSelected)||(numSelected=='')) {
     numSelected = 1;
@@ -974,7 +974,7 @@ function formMule_refreshEmailConditions(e) {
     var sourceSheet = ss.getSheetByName(sourceSheetName);
   }
   var lastCol = sourceSheet.getLastColumn();
-  var headers = sourceSheet.getRange(1, 1, 1, lastCol).getValues()[0];
+  var headers = sourceSheet.getRange(1, 1, 1, lastCol).getDisplayValues()[0];
   if ((!numSelected)||(numSelected=='')) {
     numSelected = 1;
   }
@@ -1242,7 +1242,7 @@ function formMule_saveEmailSettings(e) {
   var sheetName = ScriptProperties.getProperty('sheetName');
   var copyDownOption = ScriptProperties.getProperty('copyDownOption');
   var sheet = ss.getSheetByName(sheetName);
-  var headers = sheet.getRange(1, 1, 1, sheet.getLastColumn()).getValues()[0];
+  var headers = sheet.getRange(1, 1, 1, sheet.getLastColumn()).getDisplayValues()[0];
   for (var i=0; i<num; i++) {
     var alreadyExists = '';
     for (var j=0; j<sheets.length; j++) {
@@ -1297,7 +1297,7 @@ function formMule_setAvailableTags(templateSheet) {
     var noTags = "You have no headers in your data sheet";
   }
   var headerRange = sheet.getRange(1, 1, 1, lastCol);
-  var headers = headerRange.getValues();
+  var headers = headerRange.getDisplayValues();
   var availableTags = [];
   var j=0;
   for (var i=0; i<headers[0].length; i++) {
@@ -1487,11 +1487,17 @@ function formMule_sendEmailsAndSetAppointments(manual) {
         var startTimeStamp;
         var endTimeStamp;
         if (!(allDay=="true")) {
-          var startTimeStamp = new Date(formMule_fillInTemplateFromObject(startTimeToken, rowData));
-          var endTimeStamp = new Date(formMule_fillInTemplateFromObject(endTimeToken, rowData));
+          var startTimeStamp = new Date(formMule_fillInTemplateFromObject(startTimeToken, rowData) + " EST");
+          var endTimeStamp = new Date(formMule_fillInTemplateFromObject(endTimeToken, rowData)  + " EST");
         } else {
-          startTimeStamp = new Date(formMule_fillInTemplateFromObject(startTimeToken, rowData));
+          startTimeStamp = new Date(formMule_fillInTemplateFromObject(startTimeToken, rowData) + " EST");
         }
+      
+      
+       Logger.log(formMule_fillInTemplateFromObject(startTimeToken, rowData) + " EST");
+       Logger.log(formMule_fillInTemplateFromObject(endTimeToken, rowData) + " EST");
+       
+        
         if (guests!='') {
           var options = {guests:guests, location:location, description:desc, sendInvites:emailInvites}; 
         } else {
@@ -1943,8 +1949,8 @@ function formMule_getRowsData(sheet, range, columnHeadersRowIndex) {
   columnHeadersRowIndex = columnHeadersRowIndex || range.getRowIndex() - 1;
   var numColumns = range.getEndColumn() - range.getColumn() + 1;
   var headersRange = sheet.getRange(columnHeadersRowIndex, range.getColumn(), 1, numColumns);
-  var headers = headersRange.getValues()[0];
-  return formMule_getObjects(range.getValues(), formMule_normalizeHeaders(headers));
+  var headers = headersRange.getDisplayValues()[0];
+  return formMule_getObjects(range.getDisplayValues(), formMule_normalizeHeaders(headers));
 }
 
 // For every row of data in data, generates an object that contains the data. Names of

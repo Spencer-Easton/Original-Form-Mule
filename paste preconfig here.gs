@@ -11,7 +11,7 @@ function formMule_preconfig() {
 //#######End preconfiguration code#######
 // Note: By design, calendarID's will not be copied along with script settings. 
  //Fetch system name, if this script is part of a New Visions system
-  var systemName = NVSL.getSystemName();
+  var systemName = "CCSKNIGHTS";
   if (systemName) {
     ScriptProperties.setProperty('systemName', systemName)
   }

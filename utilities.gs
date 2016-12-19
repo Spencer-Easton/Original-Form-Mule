@@ -106,7 +106,7 @@ function formMule_clearSpecificTemplateMergeFlags() {
   var sheetName = ScriptProperties.getProperty('sheetName');
   var ss = SpreadsheetApp.getActive();
   var sheet = ss.getSheetByName(sheetName);
-  var headers = sheet.getRange(1, 1, 1, sheet.getLastColumn()).getValues()[0];
+  var headers = sheet.getRange(1, 1, 1, sheet.getLastColumn()).getDisplayValues()[0];
   var emailConditionString = ScriptProperties.getProperty('emailConditions');  
   var emailConditionObject = Utilities.jsonParse(emailConditionString);    
   var numSelected = emailConditionObject['max'];
@@ -128,7 +128,7 @@ function formMule_clearMergeFlags() {
   var sheetName = ScriptProperties.getProperty('sheetName');
   var ss = SpreadsheetApp.getActive();
   var sheet = ss.getSheetByName(sheetName);
-  var headers = sheet.getRange(1, 1, 1, sheet.getLastColumn()).getValues()[0];
+  var headers = sheet.getRange(1, 1, 1, sheet.getLastColumn()).getDisplayValues()[0];
   var emailConditionString = ScriptProperties.getProperty('emailConditions');  
   if (emailConditionString) {
     var emailConditionObject = Utilities.jsonParse(emailConditionString);  
