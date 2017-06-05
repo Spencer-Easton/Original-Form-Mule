@@ -1486,19 +1486,17 @@ function formMule_sendEmailsAndSetAppointments(manual) {
         var weekdays = formMule_fillInTemplateFromObject(calWeekdays, rowData);
         var startTimeStamp;
         var endTimeStamp;
-        if (!(allDay=="true")) {
-          var startTimeStamp = new Date(formMule_fillInTemplateFromObject(startTimeToken, rowData) + " EST");
-          var endTimeStamp = new Date(formMule_fillInTemplateFromObject(endTimeToken, rowData)  + " EST");
-        } else {
-          startTimeStamp = new Date(formMule_fillInTemplateFromObject(startTimeToken, rowData) + " EST");
-        }
-      
-      
-       Logger.log(formMule_fillInTemplateFromObject(startTimeToken, rowData) + " EST");
-       Logger.log(formMule_fillInTemplateFromObject(endTimeToken, rowData) + " EST");
-       
         
-        if (guests!='') {
+        var isDLS = (moment.moment(formMule_fillInTemplateFromObject(startTimeToken, rowData)).isDST())?"EDT":"EST";
+        
+        if (!(allDay=="true")) {          
+          var startTimeStamp =   new Date(formMule_fillInTemplateFromObject(startTimeToken, rowData) + " " + isDLS);
+          var endTimeStamp =  new Date(formMule_fillInTemplateFromObject(endTimeToken, rowData)  + " " + isDLS);
+        } else {
+          startTimeStamp = new Date(formMule_fillInTemplateFromObject(startTimeToken, rowData) + " " + isDLS);
+        } 
+      
+      if (guests!='') {
           var options = {guests:guests, location:location, description:desc, sendInvites:emailInvites}; 
         } else {
           var options = {location:location, description:desc,};
@@ -1925,6 +1923,7 @@ function formMule_fillInTemplateFromObject(template, data, newline) {
   }
   return newString;
 }
+
 
 
 
